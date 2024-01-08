@@ -1,0 +1,1 @@
+export const authServUrl = 'http://localhost:3042'
