@@ -1,17 +1,20 @@
-import logo from './logo.svg';
-import './App.css';
-import AuthPage from './pages/Auth/index';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { AuthProvider } from "./contexts/AuthContext";
+import Auth from "./pages/Auth/index";
+import Home from "./pages/Home/index"; 
 
-function App() {
+const App = () => {
   return (
     <Router>
-      <Routes>
-        <Route path="/" element={<AuthPage/>} />
-        <Route path="/home" element={<h1>Home</h1>} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<Auth />} />
+          <Route path="/home" element={<Home />} />
+        </Routes>
+      </AuthProvider>
     </Router>
   );
-}
+};
 
 export default App;
