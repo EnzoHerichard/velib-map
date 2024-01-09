@@ -1,9 +1,9 @@
 const verifyRoutes = (app, db) => {
     app.post('/verify', async function(req, res) {
-        const { username, token } = req.body;
+        const { token } = req.body;
 
         const existingUser = await new Promise((resolve, reject) => {
-            db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
+            db.get('SELECT * FROM users WHERE token = ?', [token], (err, row) => {
                 if (err) {
                     reject(err);
                 } else {
@@ -22,6 +22,8 @@ const verifyRoutes = (app, db) => {
             return;
         }
 
-        res.status(201).send({message: 'Utilisateur vérifié avec succès'});
+        res.status(201).send({message: 'Utilisateur vérifié avec succès', user: {
+            username: existingUser.username,
+        }});
     });
 }

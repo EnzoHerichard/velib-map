@@ -19,7 +19,7 @@ const loginRoutes = (app, db) => {
                         if (err) {
                             res.status(500).send(err);
                         } else {
-                            res.status(200).send({ token, username });
+                            res.status(200).send({ token });
                         }
                     });
                 } else {
