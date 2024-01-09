@@ -1,27 +1,22 @@
 import { authServUrl } from "../constants/urls";
 
-async function handleLogout(token) {
+async function verify(token) {
+    console.log(token);
   try {
-    const response = await fetch(`${authServUrl}/logout`, {
+    const response = await fetch(`${authServUrl}/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({token}),
     });
+    console.log(response);
     const data = await response.json();
-
-    if (response.ok) {
-      const { message } = data;
-      return { success: true, message };
-    } else {
-      const { message } = data;
-      return { success: false, message };
-    }
+    console.log(data);
   } catch (error) {
     console.error(error);
     return { success: false, message: error.message };
   }
 }
 
-export default handleLogout;
+export default verify;
