@@ -2,10 +2,11 @@ import React, { useEffect, useState } from "react";
 import Logout from "../../components/Logout/Logout";
 import Cookies from "js-cookie";
 import verify from "../../helpers/verify";
+import { useNavigate } from "react-router-dom";
 
 const Home = () => {
   const [username, setUsername] = useState(null);
-
+    const navigate = useNavigate();
   useEffect(() => {
     const fetchUsername = async () => {
       try {
@@ -34,6 +35,7 @@ const Home = () => {
         <p>Chargement du nom d'utilisateur...</p>
       )}
       <Logout />
+      <button onClick={() => navigate('/settings')}>Settings</button>
     </div>
   );
 };
