@@ -11,9 +11,9 @@ async function handleLogin({ username, password }) {
     });
     const data = await response.json();
     if (response.ok) {
-      const { token, user } = data;
+      const { token } = data;
 
-      return { success: true, user, token };
+      return { success: true, token };
     } else {
       return {
         success: false,
