@@ -19,6 +19,8 @@ const db = new sqlite3.Database('velib')
 
 registerRoutes(app, db)
 loginRoutes(app, db)
+logoutRoutes(app, db)
+verifyRoutes(app, db)
 
 app.get('/', function (req, res) {
   res.send('Hello World')
