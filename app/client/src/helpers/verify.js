@@ -1,7 +1,6 @@
 import { authServUrl } from "../constants/urls";
 
 async function verify(token) {
-  console.log(token);
   try {
     const response = await fetch(`${authServUrl}/verify`, {
       method: "POST",
