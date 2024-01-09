@@ -1,13 +1,13 @@
 import { authServUrl } from "../constants/urls";
 
-async function handleLogout(token) {
+async function handleLogout(username) {
   try {
     const response = await fetch(`${authServUrl}/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({token}),
+      body: JSON.stringify({username}),
     });
     const data = await response.json();
 
