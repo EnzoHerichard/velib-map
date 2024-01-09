@@ -19,6 +19,7 @@ const verifyRoutes = (app, db) => {
 
         res.status(201).send({message: 'Utilisateur vérifié avec succès', user: {
             username: existingUser.username,
+            id: existingUser.id
         }});
     });
 }

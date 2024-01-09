@@ -6,6 +6,7 @@ const registerRoutes = require('./routes/register');
 const loginRoutes = require('./routes/login');
 const logoutRoutes = require('./routes/logout');
 const verifyRoutes = require('./routes/verify');
+const updateUserName = require('./routes/updateUserName');
 
 const app = express()
 app.use(express.json());
@@ -23,7 +24,7 @@ registerRoutes(app, db)
 loginRoutes(app, db)
 logoutRoutes(app, db)
 verifyRoutes(app, db)
-
+updateUserName(app, db)
 app.get('/', function (req, res) {
   res.send('Hello World')
 })
