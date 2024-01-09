@@ -4,28 +4,26 @@ const registerRoutes = (app, db) => {
     app.post('/register', async function(req, res) {
         const { username, password } = req.body;
 
-        const existingUser = await new Promise((resolve, reject) => {
-            db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(row);
-                }
-            });
-        });
-        
-        if (existingUser !== undefined) {
-            res.status(409).send('Utilisateur déjà existant');
-            return;
-        }
-
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
+        db.get('SELECT * FROM users WHERE username = ?', [username], async (err, row) => {
             if (err) {
-                res.status(500).send(err);
-            } else {
-                res.send('Utilisateur créé avec succès');
+                return res.status(500).send(err);
+            }
+
+            if (row) {
+                return res.status(409).send('frfdUtilisateur déjà existant');
+            }
+
+            try {
+                // Si l'utilisateur n'existe pas, hasher le mot de passe et l'insérer dans la base de données
+                const hashedPassword = await bcrypt.hash(password, 10);
+                db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPassword], (err) => {
+                    if (err) {
+                        return res.status(500).send(err);
+                    }
+                    res.status(201).send({message: 'Utilisateur créé avec succès'});
+                });
+            } catch (hashError) {
+                return res.status(500).send(hashError);
             }
         });
     });

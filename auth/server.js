@@ -1,5 +1,6 @@
 const express = require('express')
 const sqlite3 = require('sqlite3')
+const cors = require('cors')
 
 const registerRoutes = require('./routes/register');
 const loginRoutes = require('./routes/login');
@@ -7,6 +8,12 @@ const loginRoutes = require('./routes/login');
 const app = express()
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+app.use(cors({
+    origin: 'http://localhost:3000',
+    credentials: true
+}))
+
 
 const db = new sqlite3.Database('velib')
 

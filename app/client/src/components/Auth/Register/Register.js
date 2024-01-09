@@ -13,10 +13,8 @@ const Register = ({ switchForm }) => {
     const registerData = await handleRegister({ username, password });
 
     if (registerData.success) {
-      console.log("Register success:", registerData.user);
       switchForm("login");
     } else {
-      console.log("Register error:", registerData.message);
       setAlert({ show: true, message: "Erreur lors de l'inscription", color: "#FF6347" });
 
     }
