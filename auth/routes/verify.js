@@ -27,3 +27,5 @@ const verifyRoutes = (app, db) => {
         }});
     });
 }
+
+module.exports = verifyRoutes;

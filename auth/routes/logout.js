@@ -11,3 +11,5 @@ const logoutRoutes = (app, db) => {
         });
     });
 }
+
+module.exports = logoutRoutes;
