@@ -9,12 +9,17 @@ const Logout = () => {
   const { logout } = useAuth();
   const handleLogoutButton = async () => {
     const token = Cookies.get("authToken");
-    const { username } = await verify(token);
-    console.log(username);
-    const logoutData = await handleLogout({ username });
-    console.log(logoutData);
-    if (logoutData.success) {
-      logout();
+    const getUsername = await verify(token);
+    console.log(getUsername.user.username);
+    if (getUsername && getUsername.user.username) {
+      const username = getUsername.user.username;
+
+      const logoutData = await handleLogout({ username });
+      if (logoutData.success) {
+        logout();
+      }
+    } else {
+      console.error("Unable to get username");
     }
   };
 
