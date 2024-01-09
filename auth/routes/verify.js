@@ -17,11 +17,6 @@ const verifyRoutes = (app, db) => {
             return;
         }
 
-        if (existingUser.token !== token) {
-            res.status(401).send('Token invalide');
-            return;
-        }
-
         res.status(201).send({message: 'Utilisateur vérifié avec succès', user: {
             username: existingUser.username,
         }});
