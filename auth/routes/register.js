@@ -14,8 +14,8 @@ const registerRoutes = (app, db) => {
             });
         });
         
-        if (existingUser !== undefined) {
-            res.status(409).send('Utilisateur déjà existant');
+        if (existingUser !== undefined ) {
+            res.status(401).send('Utilisateur déjà existant');
             return;
         }
 
@@ -25,7 +25,7 @@ const registerRoutes = (app, db) => {
             if (err) {
                 res.status(500).send(err);
             } else {
-                res.send('Utilisateur créé avec succès');
+                res.status(201).send('Utilisateur créé avec succès');
             }
         });
     });
