@@ -6,7 +6,7 @@ const logoutRoutes = (app, db) => {
             if (err) {
                 res.status(500).send(err);
             } else {
-                res.send('Utilisateur déconnecté avec succès');
+                res.status(201).send({message: 'Utilisateur déconnecté avec succès'});
             }
         });
     });

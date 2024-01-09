@@ -22,6 +22,6 @@ const verifyRoutes = (app, db) => {
             return;
         }
 
-        res.send('Utilisateur vérifié avec succès');
+        res.status(201).send({message: 'Utilisateur vérifié avec succès'});
     });
 }

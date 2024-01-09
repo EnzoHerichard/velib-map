@@ -10,7 +10,7 @@ const registerRoutes = (app, db) => {
             }
 
             if (row) {
-                return res.status(409).send('frfdUtilisateur déjà existant');
+                return res.status(409).send('Utilisateur déjà existant');
             }
 
             try {
