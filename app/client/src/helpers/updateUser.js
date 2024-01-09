@@ -1,13 +1,14 @@
 import { authServUrl } from "../constants/urls";
 
 async function handleUpdateUser(username, id) {
+  
   try {
     const response = await fetch(`${authServUrl}/updateUserName/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({username}),
+      body: JSON.stringify({newUsername: username}),
     });
     const data = await response.json();
 

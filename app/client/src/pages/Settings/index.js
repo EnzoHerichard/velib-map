@@ -8,11 +8,11 @@ import * as S from "./styles";
 const Settings = () => {
   const [username, setUsername] = useState(null);
   const [newUsername, setNewUsername] = useState('');
+  const [token, setToken] = useState(Cookies.get("authToken"));
 
   useEffect(() => {
     const fetchUsername = async () => {
       try {
-        const token = Cookies.get("authToken");
         const getUsername = await verify(token);
 
         if (getUsername && getUsername.user && getUsername.user.username) {
@@ -27,22 +27,23 @@ const Settings = () => {
     };
 
     fetchUsername();
-  }, []);
+  }, [token]); // Seulement token comme dépendance
 
-  const handleUpdateUser = async () => {
-    const token = Cookies.get("authToken");
+  const handleUpdateUserForm = async (e) => {
+    e.preventDefault();
     const getUsername = await verify(token);
-    if (getUsername && getUsername.user.username) {
-        const id = getUsername.user.id;
-        const updateUser = await handleUpdateUser({ newUsername, id });
-        if (updateUser.success) {
-            setUsername(newUsername);
-            setNewUsername('');
-        }
+
+    if (getUsername) {
+      const id = getUsername.user.id;
+      const updateUser = await handleUpdateUser(newUsername, id );
+      if (updateUser.success) {
+          setUsername(newUsername);
+          setNewUsername('');
+      }
     } else {
-        console.error("Unable to get username");
+      console.error("Unable to get username");
     }
-    };
+  };
 
   return (
     <div>
@@ -56,9 +57,9 @@ const Settings = () => {
         <form>
           <S.Label>
             Username:
-            <S.Input type="text" name="username"  value={newUsername} onChange={(e) => setUsername(e.target.value)}/>
+            <S.Input type="text" name="newUsername" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
           </S.Label>
-          <S.Button type="button" onClick={handleUpdateUser}>Modifier</S.Button>
+          <S.Button type="button" onClick={handleUpdateUserForm}>Modifier</S.Button>
         </form>
       </S.FormContainer>
     </div>
