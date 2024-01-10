@@ -36,6 +36,7 @@ const Home = () => {
       )}
       <Logout />
       <button onClick={() => navigate('/settings')}>Settings</button>
+      <button onClick={() => navigate('/new-itinerary')}>Nouvel itinéraire</button>
     </div>
   );
 };
