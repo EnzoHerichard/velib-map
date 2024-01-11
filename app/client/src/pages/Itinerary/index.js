@@ -6,12 +6,35 @@ import {
   Marker,
   Popup,
   useMapEvent,
-  Polyline
+  Polyline,
 } from "react-leaflet";
 import localisation from "./location.svg";
 import MarkerClusterGroup from "react-leaflet-cluster";
+import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
+
+const PDFDocument = ({ startStation, endStation, startStreet, endStreet, distance, duration }) => (
+  <Document>
+    <Page>
+      <Text>
+        Itinéraire Vélib'
+        {"\n"}
+        Durée du trajet : {duration} minutes
+        {"\n"}
+        Distance à parcourir : {distance} kilomètres
+        {"\n"}
+        Position de départ : {startStreet}
+        {"\n"}
+        Dirigez vous vers la station : {startStation?.name}
+        {"\n"}
+        Prenez un vélo et dirigez vous vers la station : {endStation?.name}
+        {"\n"}
+        Dirigez vous vers votre destination : {endStreet}
+      </Text>
+    </Page>
+  </Document>
+);
 
 const Itinerary = () => {
   const [velibData, setVelibData] = useState([]);
@@ -19,9 +42,13 @@ const Itinerary = () => {
     start: null,
     end: null,
   });
+  const [startStreet, setStartStreet] = useState(null);
+  const [endStreet, setEndStreet] = useState(null);
   const [nearestStartStation, setNearestStartStation] = useState(null);
   const [nearestEndStation, setNearestEndStation] = useState(null);
   const [clickCount, setClickCount] = useState(0);
+  const [distance, setDistance] = useState(null);
+  const [duration, setDuration] = useState(null);
   const [route, setRoute] = useState([]);
 
   useEffect(() => {
@@ -88,7 +115,7 @@ const Itinerary = () => {
             closestStation = record;
           }
         } else {
-          if (distance < minDistance) {
+          if (distance < minDistance && record.numdocksavailable > 0) {
             minDistance = distance;
             closestStation = record;
           }
@@ -121,22 +148,28 @@ const Itinerary = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      // Check if the response has a route
+      console.log(data);
       if (data.routes && data.routes.length > 0) {
         const routeData = data.routes[0].geometry.coordinates;
+        setStartStreet(data.waypoints[0].name);
+        setEndStreet(data.waypoints[3].name);
+        const distance = (data.routes[0].distance / 1000).toFixed(2);
+        setDistance(distance);
+        const duration = (data.routes[0].duration / 60).toFixed(0);
+        setDuration(duration);
 
-        // Convert the route data to the format expected by Polyline
+
         const formattedRoute = routeData.map((coord) => {
-            return [coord[1], coord[0]]; // Transforming the coordinate format
+          return [coord[1], coord[0]];
         });
         setRoute(formattedRoute);
       } else {
         console.error("No route found.");
-        setRoute([]); // Set an empty route to clear any existing route
+        setRoute([]);
       }
     } catch (error) {
       console.error("Error fetching route:", error);
-      setRoute([]); // Set an empty route in case of an error
+      setRoute([]);
     }
   };
 
@@ -169,9 +202,7 @@ const Itinerary = () => {
         />
 
         {/* Display the route polyline */}
-        {route.length > 0 && (
-          <Polyline positions={route} color="blue" />
-        )}
+        {route.length > 0 && <Polyline positions={route} color="blue" />}
 
         {clickedPosition.start && (
           <Marker position={clickedPosition.start} icon={startIcon}>
@@ -205,9 +236,9 @@ const Itinerary = () => {
                 <Popup>
                   <strong>{record.name}</strong>
                   <br />
-                  Available Bikes: {record.numbikesavailable}
+                  Vélos disponibles: {record.numbikesavailable}
                   <br />
-                  Available Stands: {record.numdocksavailable}
+                  Station disponibles: {record.numdocksavailable}
                 </Popup>
               </Marker>
             ))}
@@ -226,6 +257,35 @@ const Itinerary = () => {
           <p>Nom : {nearestEndStation.name}</p>
         </div>
       )}
+      {distance && (
+        <div>
+          <h3>Distance totale du trajet :</h3>
+          <p>{distance} kilomètres</p>
+        </div>
+      )}
+      {duration && (
+        <div>
+          <h3>Durée totale du trajet :</h3>
+          <p>{duration} minutes</p>
+        </div>
+      )}
+      <PDFDownloadLink
+        document={
+          <PDFDocument
+            startStation={nearestStartStation}
+            endStation={nearestEndStation}
+            startStreet={startStreet}
+            endStreet={endStreet}
+            distance={distance}
+            duration={duration}
+          />
+        }
+        fileName="itineraire.pdf"
+      >
+        {({ blob, url, loading, error }) =>
+          loading ? "Chargement du PDF..." : "Télécharger le PDF"
+        }
+      </PDFDownloadLink>
     </div>
   );
 };

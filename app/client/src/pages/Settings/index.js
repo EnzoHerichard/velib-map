@@ -27,7 +27,7 @@ const Settings = () => {
     };
 
     fetchUsername();
-  }, [token]); // Seulement token comme dépendance
+  }, [token]); 
 
   const handleUpdateUserForm = async (e) => {
     e.preventDefault();
