@@ -9,7 +9,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = (token) => {
     setAuthenticated(true);
-    Cookies.set('authToken', token, { expires: 1 }); // Le token expire après 1 jour (ajuste selon tes besoins)
+    Cookies.set('authToken', token, { expires: 1 }); 
   };
 
   const logout = () => {
