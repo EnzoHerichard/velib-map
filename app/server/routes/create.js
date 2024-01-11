@@ -2,6 +2,7 @@ const createRoute = (app, db) => {
   app.post("/itinerary", async function (req, res) {
     const {
       user_id,
+      name,
       startPointLng,
       startPointLat,
       nearestStartStationPointLng,
@@ -13,9 +14,10 @@ const createRoute = (app, db) => {
     } = req.body;
 
     db.get(
-      "SELECT * FROM itinerary WHERE user_id = ? AND startPointLng = ? AND startPointLat = ? AND nearestStartStationPointLng = ? AND nearestStartStationPointLat = ? AND nearestEndStationPointLng = ? AND nearestEndStationPointLat = ? AND endPointLng = ? AND endPointLat = ?",
+      "SELECT * FROM itinerary WHERE user_id = ? AND name = ? AND startPointLng = ? AND startPointLat = ? AND nearestStartStationPointLng = ? AND nearestStartStationPointLat = ? AND nearestEndStationPointLng = ? AND nearestEndStationPointLat = ? AND endPointLng = ? AND endPointLat = ?",
       [
         user_id,
+        name,
         startPointLng,
         startPointLat,
         nearestStartStationPointLng,
@@ -36,9 +38,10 @@ const createRoute = (app, db) => {
 
         try {
           db.run(
-            "INSERT INTO itinerary (user_id, startPointLng,startPointLat, nearestStartStationPointLng,nearestStartStationPointLat, nearestEndStationPointLng,nearestEndStationPointLat, endPointLng, endPointLat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            "INSERT INTO itinerary (user_id,name, startPointLng,startPointLat, nearestStartStationPointLng,nearestStartStationPointLat, nearestEndStationPointLng,nearestEndStationPointLat, endPointLng, endPointLat) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)",
             [
               user_id,
+              name,
               startPointLng,
               startPointLat,
               nearestStartStationPointLng,
