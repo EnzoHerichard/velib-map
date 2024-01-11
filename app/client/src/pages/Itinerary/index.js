@@ -13,6 +13,7 @@ import MarkerClusterGroup from "react-leaflet-cluster";
 import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
+import BackToHome from "../../components/BackHome";
 
 const PDFDocument = ({ startStation, endStation, startStreet, endStreet, distance, duration }) => (
   <Document>
@@ -195,13 +196,14 @@ const Itinerary = () => {
 
   return (
     <div>
+      <BackToHome />
+      <h1>Itinéraire Vélib'</h1>
       <MapContainer center={[48.8566, 2.3522]} zoom={13}>
         <TileLayer
           attribution='&amp;copy <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         />
 
-        {/* Display the route polyline */}
         {route.length > 0 && <Polyline positions={route} color="blue" />}
 
         {clickedPosition.start && (

@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import verify from "../../helpers/verify";
 import handleUpdateUser from "../../helpers/updateUser";
 import * as S from "./styles";
+import BackToHome from "../../components/BackHome";
 
 const Settings = () => {
   const [username, setUsername] = useState(null);
@@ -47,21 +48,26 @@ const Settings = () => {
 
   return (
     <div>
+      <BackToHome />
       {username ? (
         <h1>Bonjour {username}</h1>
       ) : (
         <p>Chargement du nom d'utilisateur...</p>
       )}
-      <Logout />
       <S.FormContainer>
         <form>
+          <S.Title>Modifier votre pseudo</S.Title>
           <S.Label>
-            Username:
+            Ancien pseudo: {username}
+          </S.Label>
+          <S.Label>
+            Nouveau pseudo: 
             <S.Input type="text" name="newUsername" value={newUsername} onChange={(e) => setNewUsername(e.target.value)} />
           </S.Label>
           <S.Button type="button" onClick={handleUpdateUserForm}>Modifier</S.Button>
         </form>
       </S.FormContainer>
+      <Logout />
     </div>
   );
 };

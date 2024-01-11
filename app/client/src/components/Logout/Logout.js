@@ -24,7 +24,7 @@ const Logout = () => {
   };
 
   return (
-    <S.LogoutButton onClick={handleLogoutButton}>Se déconnecter</S.LogoutButton>
+    <S.LogoutButton onClick={handleLogoutButton}><S.Svg src="https://www.svgrepo.com/show/342926/account-logout.svg" /> Se déconnecter</S.LogoutButton>
   );
 };
 

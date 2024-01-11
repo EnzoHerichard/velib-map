@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 export const FormContainer = styled.div`
-  max-width: 350px;
-  margin: 0 auto;
+  max-width: 400px;
+  margin-bottom: 50px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -16,6 +16,7 @@ export const Input = styled.input`
   width: 200px;
   padding: 8px;
   margin-bottom: 10px;
+  margin-left: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
 `;
@@ -27,4 +28,10 @@ export const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+`;
+
+export const Title = styled.h2` 
+  text-align: center;
+  margin: 0;
+  margin-bottom: 20px;
 `;
