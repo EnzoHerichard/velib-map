@@ -1,70 +1,124 @@
 import React, { useState, useEffect } from "react";
-import getUserItineraries from "../../helpers/getUserItineraries";
+import jsPDF from "jspdf";
+import styled from "styled-components";
 import Cookies from "js-cookie";
+import BackToHome from "../../components/BackHome";
+import getUserItineraries from "../../helpers/getUserItineraries";
 import verify from "../../helpers/verify";
-import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 
-const PDFDocument = ({
-  startStation,
-  endStation,
-  startStreet,
-  endStreet,
-  distance,
-  duration,
-}) => (
-  <Document>
-    <Page>
-      <Text>
-        Itinéraire Vélib'
-        {"\n"}
-        Durée du trajet : {duration} minutes
-        {"\n"}
-        Distance à parcourir : {distance} kilomètres
-        {"\n"}
-        Position de départ : {startStreet}
-        {"\n"}
-        Dirigez vous vers la station : {startStation}
-        {"\n"}
-        Prenez un vélo et dirigez vous vers la station : {endStation}
-        {"\n"}
-        Dirigez vous vers votre destination : {endStreet}
-      </Text>
-    </Page>
-  </Document>
-);
+const Container = styled.div`
+  padding: 20px;
+`;
+
+const Table = styled.ul`
+  list-style-type: none;
+  padding: 0;
+`;
+
+const TableRow = styled.li`
+  border: 1px solid #ddd;
+  margin: 10px 0;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+`;
+
+const TableData = styled.div`
+  flex: 1;
+  margin-right: 10px;
+`;
+
+const DownloadButton = styled.button`
+  background-color: #c2eabd;
+  align-self: center;
+  max-height: 40px;
+  color: black;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: #4062bb;
+    color: #ffffff;
+  }
+`;
 
 const SaveItinerary = () => {
+  const [velibData, setVelibData] = useState([]);
   const [itineraries, setItineraries] = useState([]);
-  const [token, setToken] = useState(Cookies.get("authToken"));
-  const [startStreet, setStartStreet] = useState(null);
-  const [endStreet, setEndStreet] = useState(null);
-  const [nearestStartStation, setNearestStartStation] = useState(null);
-  const [nearestEndStation, setNearestEndStation] = useState(null);
-  const [distance, setDistance] = useState(null);
-  const [duration, setDuration] = useState(null);
+  const osrmBaseUrl = "https://router.project-osrm.org/route/v1";
 
-  const fetchItineraries = async () => {
-    try {
-      const dataUser = await verify(token);
-      const id = dataUser.user.id;
-      const getItineraries = await getUserItineraries(id);
-      if (getItineraries && getItineraries.data) {
-        const fetchedItineraries = getItineraries.data;
-        
-        setItineraries(fetchedItineraries);
-      } else {
-        console.error("Unable to get itineraries");
+  useEffect(() => {
+    const fetchVelibData = async () => {
+      try {
+        const response = await fetch(
+          "https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/velib-disponibilite-en-temps-reel/records?limit=100"
+        );
+        const data = await response.json();
+        setVelibData(data.results);
+      } catch (error) {
+        console.error("Error fetching Velib data:", error);
       }
-    } catch (error) {
-      console.error("An error occurred:", error);
+    };
+    fetchVelibData();
+  }, []);
+
+  const getStreetsName = async (
+    startPointLnt,
+    startPointLat,
+    endPointLnt,
+    endPointLat
+  ) => {
+    const url = `${osrmBaseUrl}/bike/${startPointLnt},${startPointLat};${endPointLnt},${endPointLat}?overview=false`;
+    const response = await fetch(url);
+    const data = await response.json();
+    if (data.routes && data.routes.length > 0) {
+      const startStreet = data.waypoints[0].name;
+      const endStreet = data.waypoints[1].name;
+      return { startStreet, endStreet };
     }
   };
 
+  const getItineraries = async () => {
+    const token = Cookies.get("authToken");
+    const user_id = await verify(token);
+    const itineraries = await getUserItineraries(user_id.user.id);
+    setItineraries(itineraries.data);
+  };
+
   useEffect(() => {
-    fetchItineraries();
+    getItineraries();
   }, []);
 
-  const fetchRoute = async (
+  const findNearestStation = (lat, lng, isStart) => {
+    if (velibData.length > 0) {
+      let minDistance = Infinity;
+      let closestStation = null;
+
+      velibData.forEach((record) => {
+        const distance = Math.sqrt(
+          Math.pow(lat - record.coordonnees_geo.lat, 2) +
+            Math.pow(lng - record.coordonnees_geo.lon, 2)
+        );
+        if (isStart) {
+          if (distance < minDistance && record.numbikesavailable > 0) {
+            minDistance = distance;
+            closestStation = record;
+          }
+        } else {
+          if (distance < minDistance && record.numdocksavailable > 0) {
+            minDistance = distance;
+            closestStation = record;
+          }
+        }
+      });
+      return closestStation;
+    }
+    return null;
+  };
+
+  const getItinerary = async (
     startLng,
     startLat,
     nearestStartStationLng,
@@ -76,18 +130,14 @@ const SaveItinerary = () => {
   ) => {
     const osrmBaseUrl = "https://router.project-osrm.org/route/v1";
     const url = `${osrmBaseUrl}/bike/${startLng},${startLat};${nearestStartStationLng},${nearestStartStationLat};${nearestEndStationLng},${nearestEndStationLat};${endLng},${endLat}?overview=full&geometries=geojson`;
+
     try {
       const response = await fetch(url);
       const data = await response.json();
       if (data.routes && data.routes.length > 0) {
-        setStartStreet(data.waypoints[0].name);
-        setEndStreet(data.waypoints[3].name);
         const distance = (data.routes[0].distance / 1000).toFixed(2);
-        setDistance(distance);
         const duration = (data.routes[0].duration / 60).toFixed(0);
-        setDuration(duration);
-        setNearestStartStation(data.waypoints[1].name);
-        setNearestEndStation(data.waypoints[2].name);
+        return { distance, duration };
       } else {
         console.error("No route found.");
       }
@@ -95,58 +145,63 @@ const SaveItinerary = () => {
       console.error("Error fetching route:", error);
     }
   };
+  const handlePDF = async (index) => {
+    const { startStreet, endStreet } = await getStreetsName(
+      itineraries[index].startPointLng,
+      itineraries[index].startPointLat,
+      itineraries[index].endPointLng,
+      itineraries[index].endPointLat
+    );
+    const startStation = findNearestStation(
+      itineraries[index].startPointLat,
+      itineraries[index].startPointLng,
+      true
+    );
+    const endStation = findNearestStation(
+      itineraries[index].endPointLat,
+      itineraries[index].endPointLng,
+      false
+    );
 
-  useEffect(() => {
-    if (itineraries !== null) {
-       itineraries.map((itinerary) =>
-        fetchRoute(
-          itinerary.startPointLng,
-          itinerary.startPointLat,
-          itinerary.nearestStartStationPointLng,
-          itinerary.nearestStartStationPointLat,
-          itinerary.nearestEndStationPointLng,
-          itinerary.nearestEndStationPointLat,
-          itinerary.endPointLng,
-          itinerary.endPointLat
-        )
-      );
-
-    }
-  }, [itineraries]);
-
+    const startStationName = startStation ? startStation.name : "Aucune";
+    const endStationName = endStation ? endStation.name : "Aucune";
+    const { distance, duration } = await getItinerary(
+      itineraries[index].startPointLng,
+      itineraries[index].startPointLat,
+      startStation.coordonnees_geo.lon,
+      startStation.coordonnees_geo.lat,
+      endStation.coordonnees_geo.lon,
+      endStation.coordonnees_geo.lat,
+      itineraries[index].endPointLng,
+      itineraries[index].endPointLat
+    );
+    const doc = new jsPDF();
+    doc.text(`Itinéraire Vélib'`, 10, 10);
+    doc.text(`Durée du trajet : ${duration} minutes`, 10, 20);
+    doc.text(`Distance à parcourir : ${distance} kilomètres`, 10, 30);
+    doc.text(`Départ : ${startStreet}`, 10, 40);
+    doc.text(`Station de départ : ${startStationName}`, 10, 60);
+    doc.text(`Station d'arrivée : ${endStationName}`, 10, 70);
+    doc.text(`Arrivée : ${endStreet}`, 10, 50);
+    doc.save("itineraire.pdf");
+  };
   return (
-    <div>
-      <h1>Mes itineraires</h1>
-      <ul>
-        {itineraries.map((itinerary) => (
-          <div>
-            <li key={itinerary.id}>
+    <Container>
+      <BackToHome />
+      <Table>
+        {itineraries.map((itinerary, index) => (
+          <TableRow key={itinerary.id}>
+            <TableData>
               <p>{itinerary.name}</p>
               <p>{itinerary.created_date}</p>
-              <p>Départ : {startStreet}</p>
-              <p>Arrivé : {endStreet}</p>
-            </li>
-            <PDFDownloadLink
-              document={
-                <PDFDocument
-                  startStation={nearestStartStation}
-                  endStation={nearestEndStation}
-                  startStreet={startStreet}
-                  endStreet={endStreet}
-                  distance={distance}
-                  duration={duration}
-                />
-              }
-              fileName="itineraire.pdf"
-            >
-              {({ blob, url, loading, error }) =>
-                loading ? "Chargement du PDF..." : "Télécharger le PDF"
-              }
-            </PDFDownloadLink>
-          </div>
+            </TableData>
+            <DownloadButton onClick={() => handlePDF(index)}>
+              Télécharger
+            </DownloadButton>
+          </TableRow>
         ))}
-      </ul> 
-    </div>
+      </Table>
+    </Container>
   );
 };
 

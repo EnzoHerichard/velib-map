@@ -1,6 +1,7 @@
 import { backUrl } from "../constants/urls";
 
 async function getUserItineraries(id) {
+
   try {
     const response = await fetch(`${backUrl}/pdf/itineraries/${id}`, {
       method: "GET",

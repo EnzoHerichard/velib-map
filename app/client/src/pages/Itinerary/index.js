@@ -153,7 +153,6 @@ const Itinerary = () => {
     try {
       const response = await fetch(url);
       const data = await response.json();
-      console.log(data);
       if (data.routes && data.routes.length > 0) {
         const routeData = data.routes[0].geometry.coordinates;
         setStartStreet(data.waypoints[0].name);
@@ -210,7 +209,7 @@ const Itinerary = () => {
       endPointLat: clickedPosition.end.lat,
       user_id: id,
     };
-    const response = await createItinerary(itinerary);
+    const response = await createItinerary(itinerary, token);
     console.log(response);
   };
   return (
@@ -310,7 +309,7 @@ const Itinerary = () => {
         fileName="itineraire.pdf"
       >
         {({ blob, url, loading, error }) =>
-          loading ? "Chargement du PDF..." : "Télécharger le PDF"
+          loading ? "Chargement du PDF..." : "Télécharger"
         }
       </PDFDownloadLink>
     </div>

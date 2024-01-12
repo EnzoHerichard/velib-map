@@ -1,6 +1,6 @@
 import { backUrl } from "../constants/urls";
 
-const createItinerary = async (itinerary) => {
+const createItinerary = async (itinerary, token) => {
    
   const name = itinerary.name;
   const startPointLng = itinerary.startPointLng;
@@ -20,6 +20,7 @@ const createItinerary = async (itinerary) => {
       endPointLng,
       endPointLat,
       user_id,
+      token
     }),
   });
   const data = await response.json();
