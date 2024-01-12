@@ -16,7 +16,7 @@
     "server",
     "express"
   ],
-  "author": "Lilian Vasconcelos",
+  "author": "Lilian Vasconcelos & Enzo Herichard",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/EnzoHerichard/velib-map/issues"
