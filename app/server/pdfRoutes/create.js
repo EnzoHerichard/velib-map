@@ -12,12 +12,13 @@ createItineraryRoute.post("/create", async (req, res) => {
       startPointLat,
       endPointLng,
       endPointLat,
+      token
     } = req.body;
-console.log(pdfUrl)
     const pdfServerResponse = await fetch(`${pdfUrl}/itinerary`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify({
         name,

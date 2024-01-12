@@ -9,6 +9,13 @@ const createRoute = (app, db) => {
       endPointLat,
     } = req.body;
 
+    // Vérifier la présence de l'en-tête Authorization
+    const token = req.headers.authorization;
+
+    if (!token || !token.startsWith('Bearer ')) {
+      return res.status(401).send('Token d\'autorisation manquant');
+    }
+
     db.get(
       "SELECT * FROM itinerary WHERE user_id = ? AND name = ? AND startPointLng = ? AND startPointLat = ? AND endPointLng = ? AND endPointLat = ?",
       [
@@ -25,7 +32,7 @@ const createRoute = (app, db) => {
         }
 
         if (row) {
-          return res.status(409).send("Itineraire déjà enregistré");
+          return res.status(409).send("Itinéraire déjà enregistré");
         }
 
         try {
