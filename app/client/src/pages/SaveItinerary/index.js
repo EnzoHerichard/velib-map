@@ -23,9 +23,9 @@ const PDFDocument = ({
         {"\n"}
         Position de départ : {startStreet}
         {"\n"}
-        Dirigez vous vers la station : {startStation?.name}
+        Dirigez vous vers la station : {startStation}
         {"\n"}
-        Prenez un vélo et dirigez vous vers la station : {endStation?.name}
+        Prenez un vélo et dirigez vous vers la station : {endStation}
         {"\n"}
         Dirigez vous vers votre destination : {endStreet}
       </Text>
@@ -42,7 +42,6 @@ const SaveItinerary = () => {
   const [nearestEndStation, setNearestEndStation] = useState(null);
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
-  const [routesFetched, setRoutesFetched] = useState([]);
 
   const fetchItineraries = async () => {
     try {
@@ -51,6 +50,7 @@ const SaveItinerary = () => {
       const getItineraries = await getUserItineraries(id);
       if (getItineraries && getItineraries.data) {
         const fetchedItineraries = getItineraries.data;
+        
         setItineraries(fetchedItineraries);
       } else {
         console.error("Unable to get itineraries");
@@ -98,7 +98,7 @@ const SaveItinerary = () => {
 
   useEffect(() => {
     if (itineraries !== null) {
-      const promises = itineraries.map((itinerary) =>
+       itineraries.map((itinerary) =>
         fetchRoute(
           itinerary.startPointLng,
           itinerary.startPointLat,
@@ -111,9 +111,6 @@ const SaveItinerary = () => {
         )
       );
 
-      Promise.all(promises).then(() => {
-        setRoutesFetched(true);
-      });
     }
   }, [itineraries]);
 
@@ -127,41 +124,28 @@ const SaveItinerary = () => {
               <p>{itinerary.name}</p>
               <p>{itinerary.created_date}</p>
               <p>Départ : {startStreet}</p>
-              <p>{nearestStartStation}</p>
-              <p>{nearestEndStation}</p>
               <p>Arrivé : {endStreet}</p>
-              <p>{distance} kilomètre</p>
-              <p>{duration} minutes</p>
             </li>
-            {nearestEndStation &&
-              nearestStartStation &&
-              startStreet &&
-              endStreet &&
-              distance &&
-              duration &&
-              routesFetched && ( // Render PDFDownloadLink conditionally
-                <PDFDownloadLink
-                  document={
-                    <PDFDocument
-                      startStation={nearestStartStation}
-                      endStation={nearestEndStation}
-                      startStreet={startStreet}
-                      endStreet={endStreet}
-                      distance={distance}
-                      duration={duration}
-                    />
-                  }
-                  fileName="itineraire.pdf"
-                >
-                  {({ blob, url, loading, error }) =>
-                    loading ? "Chargement du PDF..." : "Télécharger le PDF"
-                  }
-                </PDFDownloadLink>
-              )}
+            <PDFDownloadLink
+              document={
+                <PDFDocument
+                  startStation={nearestStartStation}
+                  endStation={nearestEndStation}
+                  startStreet={startStreet}
+                  endStreet={endStreet}
+                  distance={distance}
+                  duration={duration}
+                />
+              }
+              fileName="itineraire.pdf"
+            >
+              {({ blob, url, loading, error }) =>
+                loading ? "Chargement du PDF..." : "Télécharger le PDF"
+              }
+            </PDFDownloadLink>
           </div>
         ))}
-      </ul>
-      {/* Add loading spinner or placeholder UI if needed */}
+      </ul> 
     </div>
   );
 };

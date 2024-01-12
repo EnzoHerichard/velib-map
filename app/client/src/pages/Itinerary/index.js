@@ -14,6 +14,9 @@ import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer";
 import "./styles.css";
 import "leaflet/dist/leaflet.css";
 import BackToHome from "../../components/BackHome";
+import createItinerary from "../../helpers/createItinerary";
+import Cookies from "js-cookie";
+import verify from "../../helpers/verify";
 
 const PDFDocument = ({ startStation, endStation, startStreet, endStreet, distance, duration }) => (
   <Document>
@@ -51,6 +54,7 @@ const Itinerary = () => {
   const [distance, setDistance] = useState(null);
   const [duration, setDuration] = useState(null);
   const [route, setRoute] = useState([]);
+  const [token, setToken] = useState(Cookies.get("authToken"));
 
   useEffect(() => {
     const fetchVelibData = async () => {
@@ -194,6 +198,25 @@ const Itinerary = () => {
     }
   }, [clickedPosition, nearestStartStation, nearestEndStation]);
 
+  const handleItineraryForm = async () => {
+    const dataUser = await verify(token);
+    const id = dataUser.user.id;
+    const name = startStreet + " - " + endStreet;
+    const itinerary = {
+      name: name,
+      startPointLng: clickedPosition.start.lng,
+      startPointLat: clickedPosition.start.lat,
+      nearestStartStationPointLng: nearestStartStation.coordonnees_geo.lon,
+      nearestStartStationPointLat: nearestStartStation.coordonnees_geo.lat,
+      nearestEndStationPointLng: nearestEndStation.coordonnees_geo.lon,
+      nearestEndStationPointLat: nearestEndStation.coordonnees_geo.lat,
+      endPointLng: clickedPosition.end.lng,
+      endPointLat: clickedPosition.end.lat,
+      user_id: id,
+    };
+    const response = await createItinerary(itinerary);
+    console.log(response);
+  };
   return (
     <div>
       <BackToHome />
@@ -247,6 +270,11 @@ const Itinerary = () => {
         </MarkerClusterGroup>
         <ClickHandler />
       </MapContainer>
+      {nearestEndStation && clickCount === 2 && (
+        <div>
+          <button onClick={handleItineraryForm}>Enregistrer l'itineraire</button>
+        </div>
+      )}
       {nearestStartStation && clickCount !== 0 && (
         <div>
           <h3>Station Vélib' la plus proche du départ :</h3>
@@ -271,6 +299,7 @@ const Itinerary = () => {
           <p>{duration} minutes</p>
         </div>
       )}
+
       <PDFDownloadLink
         document={
           <PDFDocument
