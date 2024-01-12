@@ -6,6 +6,7 @@ const loginRoute = require("./authRoutes/login");
 const registerRoute = require("./authRoutes/register");
 const logoutRoute = require("./authRoutes/logout");
 const verifyRoute = require("./authRoutes/verify");
+const updateUsernameRoute = require("./authRoutes/updateUsername");
 const createItineraryRoute = require("./pdfRoutes/create");
 const getItineraryByIdRoute = require("./pdfRoutes/getItineraryById");
 const getUserItinerariesRoute = require("./pdfRoutes/getUserItineraries");
@@ -19,6 +20,7 @@ app.use(cors());
 
 app.use('/auth', loginRoute)
 app.use('/auth', registerRoute)
+app.use('/auth', updateUsernameRoute)
 app.use('/auth', logoutRoute)
 app.use('/auth', verifyRoute)
 app.use('/pdf', createItineraryRoute)

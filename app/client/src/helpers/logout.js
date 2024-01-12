@@ -1,8 +1,8 @@
-import { authServUrl } from "../constants/urls";
+import { backUrl } from "../constants/urls";
 
 async function handleLogout(username) {
   try {
-    const response = await fetch(`${authServUrl}/logout`, {
+    const response = await fetch(`${backUrl}/auth/logout`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

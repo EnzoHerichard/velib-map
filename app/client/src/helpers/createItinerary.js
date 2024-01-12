@@ -1,18 +1,14 @@
-import { pdfServUrl } from "../constants/urls";
+import { backUrl } from "../constants/urls";
 
 const createItinerary = async (itinerary) => {
    
   const name = itinerary.name;
   const startPointLng = itinerary.startPointLng;
   const startPointLat = itinerary.startPointLat;
-  const nearestStartStationPointLng = itinerary.nearestStartStationPointLng;
-  const nearestStartStationPointLat = itinerary.nearestStartStationPointLat;
-  const nearestEndStationPointLng = itinerary.nearestEndStationPointLng;
-  const nearestEndStationPointLat = itinerary.nearestEndStationPointLat;
   const endPointLng = itinerary.endPointLng;
   const endPointLat = itinerary.endPointLat;
   const user_id = itinerary.user_id;
-  const response = await fetch(`${pdfServUrl}/itinerary`, {
+  const response = await fetch(`${backUrl}/pdf/create`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -21,10 +17,6 @@ const createItinerary = async (itinerary) => {
       name,
       startPointLng,
       startPointLat,
-      nearestStartStationPointLng,
-      nearestStartStationPointLat,
-      nearestEndStationPointLng,
-      nearestEndStationPointLat,
       endPointLng,
       endPointLat,
       user_id,

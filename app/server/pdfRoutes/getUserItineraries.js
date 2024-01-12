@@ -1,4 +1,4 @@
-const { pdfUrl } = require("./pdfUrl");
+const pdfUrl  = require("./pdfUrl");
 const express = require("express");
 
 const getUserItenariesRoute = express.Router();

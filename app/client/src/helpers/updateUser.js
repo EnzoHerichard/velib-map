@@ -1,9 +1,9 @@
-import { authServUrl } from "../constants/urls";
+import { backUrl } from "../constants/urls";
 
 async function handleUpdateUser(username, id) {
   
   try {
-    const response = await fetch(`${authServUrl}/updateUserName/${id}`, {
+    const response = await fetch(`${backUrl}/auth/updateUsername/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

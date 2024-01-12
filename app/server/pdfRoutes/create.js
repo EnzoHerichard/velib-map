@@ -1,4 +1,4 @@
-const { pdfUrl } = require("./pdfUrl");
+const pdfUrl  = require("./pdfUrl");
 const express = require("express");
 
 const createItineraryRoute = express.Router();
@@ -13,7 +13,7 @@ createItineraryRoute.post("/create", async (req, res) => {
       endPointLng,
       endPointLat,
     } = req.body;
-
+console.log(pdfUrl)
     const pdfServerResponse = await fetch(`${pdfUrl}/itinerary`, {
       method: "POST",
       headers: {
