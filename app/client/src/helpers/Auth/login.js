@@ -1,8 +1,8 @@
-import { authServUrl } from "../../constants/urls";
+import { backUrl } from "../../constants/urls";
 
 async function handleLogin({ username, password }) {
   try {
-    const response = await fetch(`${authServUrl}/login`, {
+    const response = await fetch(`${backUrl}/auth/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

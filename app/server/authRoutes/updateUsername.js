@@ -7,7 +7,7 @@ updateUsernameRoute.post("/updateUsername/:id", async (req, res) => {
     const { username } = req.body;
     const id = req.params.id;
 
-    const authServerResponse = await fetch(`${authUrl}/updateUsername/${id}`, {
+    const authServerResponse = await fetch(`${authUrl}/updateUserName/${id}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

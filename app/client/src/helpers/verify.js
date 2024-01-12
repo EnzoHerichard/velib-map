@@ -1,8 +1,8 @@
-import { authServUrl } from "../constants/urls";
+import { backUrl } from "../constants/urls";
 
 async function verify(token) {
   try {
-    const response = await fetch(`${authServUrl}/verify`, {
+    const response = await fetch(`${backUrl}/auth/verify`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

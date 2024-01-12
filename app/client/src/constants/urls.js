@@ -1,2 +1,1 @@
-export const authServUrl = 'http://localhost:3042'
-export const pdfServUrl = 'http://localhost:3050'
+export const backUrl = 'http://localhost:3001'
