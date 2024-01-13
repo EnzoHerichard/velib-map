@@ -5,6 +5,8 @@ import Cookies from "js-cookie";
 import BackToHome from "../../components/BackHome";
 import getUserItineraries from "../../helpers/getUserItineraries";
 import verify from "../../helpers/verify";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Container = styled.div`
   padding: 20px;
@@ -48,6 +50,8 @@ const SaveItinerary = () => {
   const [velibData, setVelibData] = useState([]);
   const [itineraries, setItineraries] = useState([]);
   const osrmBaseUrl = "https://router.project-osrm.org/route/v1";
+  const { authenticated } = useAuth();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchVelibData = async () => {
@@ -63,6 +67,13 @@ const SaveItinerary = () => {
     };
     fetchVelibData();
   }, []);
+
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/"); 
+      return;
+    }
+  }, [authenticated, navigate]);
 
   const getStreetsName = async (
     startPointLnt,
@@ -90,6 +101,7 @@ const SaveItinerary = () => {
   useEffect(() => {
     getItineraries();
   }, []);
+
 
   const findNearestStation = (lat, lng, isStart) => {
     if (velibData.length > 0) {

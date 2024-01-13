@@ -5,12 +5,22 @@ import verify from "../../helpers/verify";
 import handleUpdateUser from "../../helpers/updateUser";
 import * as S from "./styles";
 import BackToHome from "../../components/BackHome";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const Settings = () => {
   const [username, setUsername] = useState(null);
   const [newUsername, setNewUsername] = useState('');
   const [token, setToken] = useState(Cookies.get("authToken"));
+  const { authenticated } = useAuth();
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/"); 
+      return;
+    }
+  }, [authenticated, navigate]);
   useEffect(() => {
     const fetchUsername = async () => {
       try {

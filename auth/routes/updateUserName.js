@@ -1,5 +1,5 @@
 const updateUserName = (app, db) => {
-    app.post('/updateUserName/:id', async function(req, res) {
+    app.post('/updateUserName/:id', async function(req, res) {     
         const newUsername = req.body.newUsername;
         const id = req.params.id;
 

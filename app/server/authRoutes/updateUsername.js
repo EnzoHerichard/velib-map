@@ -4,7 +4,7 @@ const updateUsernameRoute = express.Router();
 
 updateUsernameRoute.post("/updateUsername/:id", async (req, res) => {
   try {
-    const { username } = req.body;
+    const { newUsername } = req.body;
     const id = req.params.id;
 
     const authServerResponse = await fetch(`${authUrl}/updateUserName/${id}`, {
@@ -12,7 +12,7 @@ updateUsernameRoute.post("/updateUsername/:id", async (req, res) => {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ username }),
+      body: JSON.stringify({ newUsername: newUsername }),
     });
 
     if (authServerResponse.ok) {

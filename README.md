@@ -1,51 +1,55 @@
-# velib-map
+# Velib-Map
 
-Description du projet: Projet permettant de créer un itinéraire avec l'utilisation de Velib', le sauvergarder puis l'imprimer au format pdf. Développé en NodeJS et ReactJS puis grâce à OpenStreetMaps et leaflet.
+Projet permettant de créer un itinéraire avec l'utilisation de Velib', le sauvegarder puis l'imprimer au format pdf. Développé en NodeJS et ReactJS avec l'utilisation d'OpenStreetMaps et Leaflet.
 
------Lancer le projet en local-----
+## Lancer le projet en local
 
-(Tout les cd se font à partir du dossier velib donc de la racine du projet)
+(Toutes les commandes `cd` se font à partir du dossier velib, donc de la racine du projet)
 
-Lancer le serveur d'authentification :
+### Lancer le serveur d'authentification:
 
-Se déplacer dans le dossier auth
--cd auth
-Créer la base de données
--node scripts/initDb 
-Installer les dépendances
--npm i
-Démarrer le serveur
--node server.js
+Il faut se déplacer dans le dossier auth, lancer le script d'initialisation de la DB, installer les dépendances et ensuite lancer le serveur
 
-Lancer le serveur itinéraires + le front:
+```bash
+cd auth
+node scripts/initDb
+npm install
+node server.js
+```
 
-BACK
-Se déplacer dans le dossier client
--cd app/client
-Installer les dépendances
--npm i
-Démarrer le serveur
--npm run start
+### Lancer le serveur pdf:
 
-FRONT
-Se déplacer dans le dossier server
--cd app/server
-Installer les dépendances
--npm i
-Démarrer le serveur
--node server.js
+Il faut se déplacer dans le dossier pdf, lancer le script d'initialisation de la DB, installer les dépendances et ensuite lancer le serveur
 
+```bash
+cd pdf
+node scripts/initDb
+npm install
+node server.js
+```
 
-Lancer le serveur pdf:
+### Lancer le serveur itinéraire + le front:
 
-Se déplacer dans le dossier pdf
--cd pdf
-Créer la base de données
--node scripts/initDb 
-Installer les dépendances
--npm i
-Démarrer le serveur
--node server.js
+Il faut se déplacer dans le dossier app
 
+```bash
+cd app
+```
 
-Vous avez maintenant accès à l'application et toutes ces fonctionnalités sur la route http://localhost:3000 😉
+Commençons par lancer le serveur en se déplaçant dans server, installez les dépendance et lancez le serveur
+
+```bash
+cd server
+npm install
+node server.js
+```
+
+Ensuite lançons le front, deplacez-vous dans le dossier client, installez les dépendances et lancer React
+
+```bash
+cd client
+npm install
+npm run start
+```
+
+Vous avez maintenant accès à l'application et toutes ses fonctionnalités sur la route http://localhost:3000 😉

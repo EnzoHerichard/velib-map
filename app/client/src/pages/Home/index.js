@@ -2,14 +2,21 @@ import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import verify from "../../helpers/verify";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";  // Update the path accordingly
 import { Button, DivButtons, Svg } from "./styles";
 
 const Home = () => {
+  const { authenticated } = useAuth();
   const [username, setUsername] = useState(null);
   const [randomGreeting, setRandomGreeting] = useState(null);
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (!authenticated) {
+      navigate('/');  // Redirect to the home page if not authenticated
+      return;
+    }
+
     const fetchUsername = async () => {
       try {
         const token = Cookies.get("authToken");
@@ -28,7 +35,7 @@ const Home = () => {
     };
 
     fetchUsername();
-  }, []);
+  }, [authenticated, navigate]);
 
   const generateRandomGreeting = () => {
     const greetings = [

@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import BackToHome from "../../components/BackHome";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 const StationsContainer = styled.div`
   margin: 0px;
@@ -27,7 +29,15 @@ const TableCell = styled.td`
 
 const Stations = () => {
   const [velibData, setVelibData] = useState([]);
+  const { authenticated } = useAuth();
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/"); 
+      return;
+    }
+  }, [authenticated, navigate]);
   useEffect(() => {
     const fetchVelibData = async () => {
       try {

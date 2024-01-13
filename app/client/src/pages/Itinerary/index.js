@@ -17,6 +17,8 @@ import BackToHome from "../../components/BackHome";
 import createItinerary from "../../helpers/createItinerary";
 import Cookies from "js-cookie";
 import verify from "../../helpers/verify";
+import { useAuth } from "../../contexts/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const PDFDocument = ({ startStation, endStation, startStreet, endStreet, distance, duration }) => (
   <Document>
@@ -55,6 +57,8 @@ const Itinerary = () => {
   const [duration, setDuration] = useState(null);
   const [route, setRoute] = useState([]);
   const [token, setToken] = useState(Cookies.get("authToken"));
+  const navigate = useNavigate();
+  const { authenticated } = useAuth();
 
   useEffect(() => {
     const fetchVelibData = async () => {
@@ -71,6 +75,13 @@ const Itinerary = () => {
 
     fetchVelibData();
   }, []);
+
+  useEffect(() => {
+    if (!authenticated) {
+      navigate("/"); 
+      return;
+    }
+  }, [authenticated, navigate]);
 
   const customIcon = new Icon({
     iconUrl: localisation,
