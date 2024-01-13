@@ -1,4 +1,7 @@
 # Velib-Map
+Projet réalisé par Enzo Hérichard et Lilian Vasconcelos.
+- Enzo Hérichard: [GitHub](https://github.com/EnzoHerichard)
+- Lilian Vasconcelos: [GitHub](https://github.com/Lvscls)
 
 Projet permettant de créer un itinéraire avec l'utilisation de Velib', le sauvegarder puis l'imprimer au format pdf. Développé en NodeJS et ReactJS avec l'utilisation d'OpenStreetMaps et Leaflet.
 
